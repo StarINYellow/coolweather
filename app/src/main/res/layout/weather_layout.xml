@@ -9,7 +9,7 @@
         android:background="#484E61">
         <Button
             android:id="@+id/switch_city"
-            android:text="切换城市"
+           android:background="@drawable/back"
             android:textColor="#fff"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/refresh_weather"
-            android:text="Refresh weather"
+           android:background="@drawable/refresh"
             android:textAllCaps="false"
             android:textColor="#fff"
             android:layout_alignParentRight="true"
