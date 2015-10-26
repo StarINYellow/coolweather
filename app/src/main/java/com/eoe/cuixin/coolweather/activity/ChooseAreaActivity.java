@@ -2,7 +2,10 @@ package com.eoe.cuixin.coolweather.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
@@ -19,7 +22,7 @@ import com.eoe.cuixin.coolweather.model.County;
 import com.eoe.cuixin.coolweather.model.Province;
 import com.eoe.cuixin.coolweather.utli.HttpCallBackListener;
 import com.eoe.cuixin.coolweather.utli.HttpUtil;
-import com.eoe.cuixin.coolweather.utli.Utilty;
+import com.eoe.cuixin.coolweather.utli.Utility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +55,13 @@ public class ChooseAreaActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(this);
+        if(preferences.getBoolean("city_selected",false)){
+            Intent intent=new Intent(this,WeatherActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.choose_area);
         textTitle=(TextView)findViewById(R.id.text_title);
@@ -71,6 +81,13 @@ public class ChooseAreaActivity extends Activity {
                 else if(Level_Current==Level_City){
                     selectedCity=listCities.get(position);
                     queryCounties();
+                }
+                else if(Level_Current==Level_County){
+                    String countyCode=listCounty.get(position).getCountyCode();
+                    Intent intent=new Intent(ChooseAreaActivity.this,WeatherActivity.class);
+                    intent.putExtra("county_code",countyCode);
+                    startActivity(intent);
+                    finish();
                 }
             }
         });
@@ -143,14 +160,14 @@ public class ChooseAreaActivity extends Activity {
             public void onFinish(String respone) {
                 boolean result=false;
                 if("province".equals(type)){
-                    result=Utilty.handleProvincesRespone(coolWeatherDB,respone);
+                    result= Utility.handleProvincesRespone(coolWeatherDB, respone);
 
                 }
                 else if("city".equals(type)){
-                    result=Utilty.handleCitiesRespone(coolWeatherDB,respone,selectedProvince.getId());
+                    result= Utility.handleCitiesRespone(coolWeatherDB, respone, selectedProvince.getId());
                 }
                 else if("county".equals(type)){
-                    result=Utilty.handleCountiesRespone(coolWeatherDB,respone,selectedCity.getId());
+                    result= Utility.handleCountiesRespone(coolWeatherDB, respone, selectedCity.getId());
                 }
                 if(result){
                     runOnUiThread(new Runnable() {
